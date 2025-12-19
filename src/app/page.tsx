@@ -63,7 +63,7 @@ export default async function Home() {
             <div className="relative z-10">
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-sm text-blue-700 mb-8">
                 <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-                AI-Powered Accounting for Everyone
+                AI Accounting App - Smart AI Based Accounting
               </div>
 
               <h1 className="text-5xl md:text-7xl font-bold text-black mb-6 leading-tight">
@@ -117,10 +117,10 @@ export default async function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
-                Everything you need to manage finances
+                Complete AI Accounting Features
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Powerful features designed for small businesses and freelancers
+                Powerful AI based accounting features designed for small businesses and freelancers
               </p>
             </div>
 
@@ -130,7 +130,7 @@ export default async function Home() {
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
                   <span className="text-2xl">🤖</span>
                 </div>
-                <h3 className="text-xl font-bold text-black mb-3">AI-Powered Entry</h3>
+                <h3 className="text-xl font-bold text-black mb-3">AI Accounting Entry</h3>
                 <p className="text-gray-600">
                   Just type naturally. Our AI understands context, extracts amounts, dates, and categories automatically.
                 </p>
@@ -264,7 +264,7 @@ export default async function Home() {
                 <p className="text-gray-600 mb-4">We&apos;ll respond within 24 hours</p>
                 {/* TODO: Replace with your email */}
                 <a href="mailto:support@accountai.tech" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
-                  support@accountai.tech
+                  info@accountai.tech
                 </a>
               </div>
 
@@ -279,7 +279,7 @@ export default async function Home() {
                 <p className="text-gray-600 mb-4">Mon-Fri from 9am to 6pm</p>
                 {/* TODO: Replace with your phone number */}
                 <a href="tel:+919876543210" className="text-green-600 font-semibold hover:text-green-700 transition-colors">
-                  +91 98765 43210
+                  +91 8695018620
                 </a>
               </div>
 
@@ -295,7 +295,7 @@ export default async function Home() {
                 <p className="text-gray-600 mb-4">Come say hello</p>
                 {/* TODO: Replace with your address */}
                 <p className="text-purple-600 font-semibold">
-                  Chennai, Tamil Nadu, India
+                  Tirupur, Tamil Nadu, India
                 </p>
               </div>
             </div>
@@ -427,7 +427,7 @@ export default async function Home() {
           <div className="border-t border-gray-200 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-gray-500 text-sm">
-                © 2024 Account AI. All rights reserved.
+                © 2024 Account AI - AI Accounting App. All rights reserved.
               </p>
               <div className="flex gap-6 text-sm">
                 <a href="#" className="text-gray-500 hover:text-blue-600 transition-colors">Privacy Policy</a>
