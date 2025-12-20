@@ -32,29 +32,27 @@
   --radius: 0.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #020617;
-    /* Slate 950 */
-    --foreground: #f8fafc;
+.dark {
+  --background: #020617;
+  /* Slate 950 */
+  --foreground: #f8fafc;
 
-    --primary: #8BE052;
-    --primary-foreground: #020617;
+  --primary: #8BE052;
+  --primary-foreground: #020617;
 
-    --secondary: #1a2e05;
-    /* Deep Green/Slate */
-    --secondary-foreground: #ecfccb;
+  --secondary: #1a2e05;
+  /* Deep Green/Slate */
+  --secondary-foreground: #ecfccb;
 
-    --accent: #4ade80;
-    /* Brighter green for dark mode accent */
-    --accent-foreground: #020617;
+  --accent: #4ade80;
+  /* Brighter green for dark mode accent */
+  --accent-foreground: #020617;
 
-    --card: #0f172a;
-    --card-foreground: #f8fafc;
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
 
-    --border: #1e293b;
-    --input: #1e293b;
-  }
+  --border: #1e293b;
+  --input: #1e293b;
 }
 
 @theme inline {
