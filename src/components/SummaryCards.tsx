@@ -56,7 +56,7 @@ export default function SummaryCards({ summary, currency = 'INR' }: SummaryCards
                 {cards.map((card, index) => (
                     <div
                         key={index}
-                        className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg transition-all"
+                        className="bg-card rounded-xl border border-border p-5 hover:shadow-lg transition-all"
                     >
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-2xl">{card.icon}</span>
@@ -64,7 +64,7 @@ export default function SummaryCards({ summary, currency = 'INR' }: SummaryCards
                                 <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${card.color}`}></div>
                             </div>
                         </div>
-                        <p className="text-sm text-gray-500 mb-1">{card.label}</p>
+                        <p className="text-sm text-muted-foreground mb-1">{card.label}</p>
                         <p className={`text-xl font-bold ${card.textColor}`}>
                             {formatAmount(card.amount)}
                         </p>
@@ -74,12 +74,12 @@ export default function SummaryCards({ summary, currency = 'INR' }: SummaryCards
 
             {/* Net Profit/Loss Card */}
             <div className={`rounded-xl border p-6 ${netProfit >= 0
-                ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200'
-                : 'bg-gradient-to-r from-red-50 to-rose-50 border-red-200'
+                ? 'bg-gradient-to-r from-green-50/50 to-emerald-50/50 border-green-200/50'
+                : 'bg-gradient-to-r from-red-50/50 to-rose-50/50 border-red-200/50'
                 }`}>
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-sm text-gray-600 mb-1">Net Profit/Loss</p>
+                        <p className="text-sm text-foreground/70 mb-1">Net Profit/Loss</p>
                         <p className={`text-2xl font-bold ${netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {netProfit >= 0 ? '+' : ''}{formatAmount(netProfit)}
                         </p>

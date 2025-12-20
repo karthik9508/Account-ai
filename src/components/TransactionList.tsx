@@ -89,29 +89,29 @@ export default function TransactionList({
 
     if (transactions.length === 0) {
         return (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-card rounded-2xl shadow-sm border border-border p-12 text-center">
+                <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-black mb-2">No Transactions Found</h3>
-                <p className="text-gray-500 text-sm">No transactions match the current filter</p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">No Transactions Found</h3>
+                <p className="text-foreground/50 text-sm">No transactions match the current filter</p>
             </div>
         )
     }
 
     return (
         <>
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-black">
+            <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-foreground">
                         {limit ? 'Recent Transactions' : `Transactions (${transactions.length})`}
                     </h3>
                     {showViewAll && hasMore && (
                         <Link
                             href="/dashboard/transactions"
-                            className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                            className="text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1"
                         >
                             View All
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,13 +120,13 @@ export default function TransactionList({
                         </Link>
                     )}
                 </div>
-                <div className="divide-y divide-gray-100">
+                <div className="divide-y divide-border">
                     {displayTransactions.map((transaction) => {
                         const config = categoryConfig[transaction.category]
                         return (
                             <div
                                 key={transaction.id}
-                                className="px-6 py-4 hover:bg-gray-50 transition-all group"
+                                className="px-6 py-4 hover:bg-secondary/50 transition-all group"
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-start gap-4 flex-1 min-w-0">
@@ -137,13 +137,13 @@ export default function TransactionList({
                                                     {config.label}
                                                 </span>
                                                 {transaction.party_name && (
-                                                    <span className="text-xs text-gray-500">
+                                                    <span className="text-xs text-foreground/50">
                                                         • {transaction.party_name}
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-black font-medium truncate">{transaction.description}</p>
-                                            <p className="text-xs text-gray-400 mt-1">{formatDate(transaction.created_at, dateFormat)}</p>
+                                            <p className="text-foreground font-medium truncate">{transaction.description}</p>
+                                            <p className="text-xs text-foreground/40 mt-1">{formatDate(transaction.created_at, dateFormat)}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -160,7 +160,7 @@ export default function TransactionList({
                                             {/* Edit Button */}
                                             <button
                                                 onClick={() => handleEdit(transaction)}
-                                                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                className="p-2 text-foreground/30 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                                                 title="Edit transaction"
                                             >
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,7 +172,7 @@ export default function TransactionList({
                                             <button
                                                 onClick={() => handleDeleteClick(transaction.id)}
                                                 disabled={deletingId === transaction.id}
-                                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                className="p-2 text-foreground/30 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                                                 title="Delete transaction"
                                             >
                                                 {deletingId === transaction.id ? (
@@ -194,10 +194,10 @@ export default function TransactionList({
                     })}
                 </div>
                 {showViewAll && hasMore && (
-                    <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+                    <div className="px-6 py-3 bg-card border-t border-border">
                         <Link
                             href="/dashboard/transactions"
-                            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                            className="text-sm text-primary hover:text-primary/80 font-medium"
                         >
                             +{transactions.length - (limit || 0)} more transactions
                         </Link>

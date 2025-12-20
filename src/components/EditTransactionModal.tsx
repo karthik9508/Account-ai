@@ -74,14 +74,15 @@ export default function EditTransactionModal({
     }
 
     return (
+
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-black">Edit Transaction</h2>
+                <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                    <h2 className="text-lg font-semibold text-foreground">Edit Transaction</h2>
                     <button
                         onClick={onClose}
-                        className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-lg transition-all"
+                        className="p-2 text-foreground/50 hover:text-foreground hover:bg-secondary rounded-lg transition-all"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -93,7 +94,7 @@ export default function EditTransactionModal({
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     {/* Category Selection */}
                     <div>
-                        <label className="text-sm font-medium text-gray-700 mb-2 block">Category</label>
+                        <label className="text-sm font-medium text-foreground/80 mb-2 block">Category</label>
                         <div className="flex gap-2">
                             {(['sales', 'purchase', 'expense', 'income'] as const).map((cat) => (
                                 <button
@@ -101,8 +102,8 @@ export default function EditTransactionModal({
                                     type="button"
                                     onClick={() => setFormData({ ...formData, category: cat })}
                                     className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-all ${formData.category === cat
-                                            ? categoryConfig[cat].color
-                                            : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'
+                                        ? categoryConfig[cat].color
+                                        : 'bg-input text-foreground/50 border-border hover:bg-secondary'
                                         }`}
                                 >
                                     {categoryConfig[cat].icon} {categoryConfig[cat].label}
@@ -113,26 +114,26 @@ export default function EditTransactionModal({
 
                     {/* Description */}
                     <div>
-                        <label className="text-sm font-medium text-gray-700 mb-1 block">Description</label>
+                        <label className="text-sm font-medium text-foreground/80 mb-1 block">Description</label>
                         <input
                             type="text"
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="w-full px-4 py-2.5 rounded-lg bg-input/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             placeholder="Transaction description"
                         />
                     </div>
 
                     {/* Amount */}
                     <div>
-                        <label className="text-sm font-medium text-gray-700 mb-1 block">Amount (₹)</label>
+                        <label className="text-sm font-medium text-foreground/80 mb-1 block">Amount (₹)</label>
                         <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/50">₹</span>
                             <input
                                 type="number"
                                 value={formData.amount}
                                 onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
-                                className="w-full pl-8 pr-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200 text-black font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                className="w-full pl-8 pr-4 py-2.5 rounded-lg bg-input/50 border border-border text-foreground font-semibold focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 placeholder="0"
                                 min="0"
                                 step="0.01"
@@ -142,36 +143,36 @@ export default function EditTransactionModal({
 
                     {/* Party Name */}
                     <div>
-                        <label className="text-sm font-medium text-gray-700 mb-1 block">Party Name (optional)</label>
+                        <label className="text-sm font-medium text-foreground/80 mb-1 block">Party Name (optional)</label>
                         <input
                             type="text"
                             value={formData.party_name || ''}
                             onChange={(e) => setFormData({ ...formData, party_name: e.target.value || null })}
-                            className="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="w-full px-4 py-2.5 rounded-lg bg-input/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             placeholder="Customer or vendor name"
                         />
                     </div>
 
                     {/* Date */}
                     <div>
-                        <label className="text-sm font-medium text-gray-700 mb-1 block">Date</label>
+                        <label className="text-sm font-medium text-foreground/80 mb-1 block">Date</label>
                         <input
                             type="date"
                             value={formData.created_at}
                             onChange={(e) => setFormData({ ...formData, created_at: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="w-full px-4 py-2.5 rounded-lg bg-input/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                         />
                     </div>
 
                     {/* Summary */}
-                    <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
+                    <div className="p-3 rounded-lg bg-secondary/30 border border-border">
                         <div className="flex items-center justify-between">
                             <span className={`text-sm px-2 py-0.5 rounded-full font-medium border ${categoryConfig[formData.category].color}`}>
                                 {categoryConfig[formData.category].icon} {categoryConfig[formData.category].label}
                             </span>
                             <span className={`text-lg font-bold ${formData.category === 'sales' || formData.category === 'income'
-                                    ? 'text-green-600'
-                                    : 'text-red-600'
+                                ? 'text-green-600'
+                                : 'text-red-600'
                                 }`}>
                                 {formData.category === 'sales' || formData.category === 'income' ? '+' : '-'}
                                 {formatCurrency(formData.amount)}
@@ -181,8 +182,8 @@ export default function EditTransactionModal({
 
                     {/* Error */}
                     {error && (
-                        <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-                            <p className="text-red-600 text-sm">{error}</p>
+                        <div className="p-3 rounded-lg bg-red-50/10 border border-red-500/20">
+                            <p className="text-red-500 text-sm">{error}</p>
                         </div>
                     )}
 
@@ -192,14 +193,14 @@ export default function EditTransactionModal({
                             type="button"
                             onClick={onClose}
                             disabled={isSaving}
-                            className="flex-1 py-2.5 px-4 rounded-lg border-2 border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-all disabled:opacity-50"
+                            className="flex-1 py-2.5 px-4 rounded-lg border-2 border-border text-foreground/70 font-medium hover:bg-secondary transition-all disabled:opacity-50"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isSaving}
-                            className="flex-1 py-2.5 px-4 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            className="flex-1 py-2.5 px-4 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                         >
                             {isSaving ? (
                                 <>

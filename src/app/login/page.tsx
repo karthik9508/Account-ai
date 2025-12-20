@@ -11,30 +11,30 @@ export default async function LoginPage({
     const message = params.message
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-white">
+        <div className="min-h-screen flex items-center justify-center bg-background">
             <div className="w-full max-w-md">
                 {/* Card */}
-                <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8">
+                <div className="bg-card rounded-2xl shadow-2xl border border-border p-8">
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center mx-auto mb-4">
-                            <span className="text-white font-bold text-2xl">A</span>
+                        <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4">
+                            <span className="text-primary-foreground font-bold text-2xl">A</span>
                         </div>
-                        <h1 className="text-3xl font-bold text-black mb-2">Welcome Back</h1>
-                        <p className="text-gray-600">Sign in to your account</p>
+                        <h1 className="text-3xl font-bold text-foreground mb-2">Welcome Back</h1>
+                        <p className="text-foreground/60">Sign in to your account</p>
                     </div>
 
                     {/* Error Message */}
                     {error && (
-                        <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200">
-                            <p className="text-red-600 text-sm text-center">{error}</p>
+                        <div className="mb-6 p-4 rounded-lg bg-red-50/10 border border-red-500/20">
+                            <p className="text-red-500 text-sm text-center">{error}</p>
                         </div>
                     )}
 
                     {/* Success Message */}
                     {message && (
-                        <div className="mb-6 p-4 rounded-lg bg-green-50 border border-green-200">
-                            <p className="text-green-600 text-sm text-center">{message}</p>
+                        <div className="mb-6 p-4 rounded-lg bg-green-50/10 border border-green-500/20">
+                            <p className="text-green-500 text-sm text-center">{message}</p>
                         </div>
                     )}
 
@@ -42,7 +42,7 @@ export default async function LoginPage({
                     <form className="mb-6">
                         <button
                             formAction={signInWithGoogle}
-                            className="w-full py-3 px-4 rounded-lg bg-white border-2 border-gray-200 text-black font-semibold hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all flex items-center justify-center gap-3"
+                            className="w-full py-3 px-4 rounded-lg bg-card border-2 border-border text-foreground font-semibold hover:bg-secondary hover:border-border/80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all flex items-center justify-center gap-3"
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                 <path
@@ -69,17 +69,17 @@ export default async function LoginPage({
                     {/* Divider */}
                     <div className="relative mb-6">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-200"></div>
+                            <div className="w-full border-t border-border"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-4 bg-white text-gray-500">or sign in with email</span>
+                            <span className="px-4 bg-card text-foreground/50">or sign in with email</span>
                         </div>
                     </div>
 
                     {/* Email Form */}
                     <form className="space-y-6">
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                                 Email
                             </label>
                             <input
@@ -87,13 +87,13 @@ export default async function LoginPage({
                                 name="email"
                                 type="email"
                                 required
-                                className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                className="w-full px-4 py-3 rounded-lg bg-input/50 border border-border text-foreground placeholder-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 placeholder="you@example.com"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
                                 Password
                             </label>
                             <input
@@ -101,14 +101,14 @@ export default async function LoginPage({
                                 name="password"
                                 type="password"
                                 required
-                                className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                className="w-full px-4 py-3 rounded-lg bg-input/50 border border-border text-foreground placeholder-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
 
                         <button
                             formAction={login}
-                            className="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold hover:from-blue-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-500/25"
+                            className="w-full py-3 px-4 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/25"
                         >
                             Sign In
                         </button>
@@ -117,17 +117,17 @@ export default async function LoginPage({
                     {/* Divider */}
                     <div className="relative my-8">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-200"></div>
+                            <div className="w-full border-t border-border"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-4 bg-white text-gray-500">Don&apos;t have an account?</span>
+                            <span className="px-4 bg-card text-foreground/50">Don&apos;t have an account?</span>
                         </div>
                     </div>
 
                     {/* Sign Up Link */}
                     <Link
                         href="/signup"
-                        className="block w-full py-3 px-4 rounded-lg border-2 border-gray-200 text-black font-semibold text-center hover:border-blue-300 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="block w-full py-3 px-4 rounded-lg border-2 border-border text-foreground font-semibold text-center hover:border-primary/50 hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     >
                         Create Account
                     </Link>
@@ -135,7 +135,7 @@ export default async function LoginPage({
 
                 {/* Back to Home */}
                 <div className="text-center mt-6">
-                    <Link href="/" className="text-gray-500 hover:text-blue-600 transition-colors">
+                    <Link href="/" className="text-foreground/50 hover:text-primary transition-colors">
                         ← Back to Home
                     </Link>
                 </div>

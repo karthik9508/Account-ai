@@ -114,53 +114,59 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
     const currentCurrencyInfo = CURRENCIES.find(c => c.code === currency)
 
     return (
+
+
         <div className="space-y-6">
             {/* Success Message */}
-            {success && (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <p className="text-green-700 font-medium">Operation completed successfully!</p>
-                </div>
-            )}
+            {
+                success && (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <p className="text-green-700 font-medium">Operation completed successfully!</p>
+                    </div>
+                )
+            }
 
             {/* Error Message */}
-            {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
-                    <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <p className="text-red-700 font-medium">{error}</p>
-                </div>
-            )}
+            {
+                error && (
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                        <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <p className="text-red-700 font-medium">{error}</p>
+                    </div>
+                )
+            }
 
             {/* Account Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-black">Account</h2>
-                    <p className="text-sm text-gray-500">Your account information</p>
+            <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="px-6 py-4 border-b border-border">
+                    <h2 className="text-lg font-semibold text-foreground">Account</h2>
+                    <p className="text-sm text-muted-foreground">Your account information</p>
                 </div>
                 <div className="p-6 space-y-4">
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div className="flex items-center justify-between py-3 border-b border-border/50">
                         <div>
-                            <p className="text-sm font-medium text-black">Email Address</p>
-                            <p className="text-sm text-gray-500">{userEmail}</p>
+                            <p className="text-sm font-medium text-foreground">Email Address</p>
+                            <p className="text-sm text-muted-foreground">{userEmail}</p>
                         </div>
-                        <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">
+                        <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-600 text-xs font-medium">
                             Verified
                         </span>
                     </div>
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div className="flex items-center justify-between py-3 border-b border-border/50">
                         <div>
-                            <p className="text-sm font-medium text-black">Account ID</p>
-                            <p className="text-sm text-gray-500 font-mono">{userId.substring(0, 8)}...</p>
+                            <p className="text-sm font-medium text-foreground">Account ID</p>
+                            <p className="text-sm text-muted-foreground font-mono">{userId.substring(0, 8)}...</p>
                         </div>
                     </div>
                     <div className="flex items-center justify-between py-3">
                         <div>
-                            <p className="text-sm font-medium text-black">Member Since</p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm font-medium text-foreground">Member Since</p>
+                            <p className="text-sm text-muted-foreground">
                                 {new Date(createdAt).toLocaleDateString('en-IN', {
                                     day: 'numeric',
                                     month: 'long',
@@ -173,11 +179,11 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
             </div>
 
             {/* Preferences Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                     <div>
-                        <h2 className="text-lg font-semibold text-black">Preferences</h2>
-                        <p className="text-sm text-gray-500">Customize your experience</p>
+                        <h2 className="text-lg font-semibold text-foreground">Preferences</h2>
+                        <p className="text-sm text-muted-foreground">Customize your experience</p>
                     </div>
                     {isSaving && (
                         <div className="flex items-center gap-2 text-blue-600 text-sm">
@@ -191,10 +197,10 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
                 </div>
                 <div className="p-6 space-y-6">
                     {/* Currency Selector */}
-                    <div className="pb-6 border-b border-gray-100">
+                    <div className="pb-6 border-b border-border">
                         <div className="mb-3">
-                            <p className="text-sm font-medium text-black">Currency</p>
-                            <p className="text-sm text-gray-500">Display currency for transactions</p>
+                            <p className="text-sm font-medium text-foreground">Currency</p>
+                            <p className="text-sm text-muted-foreground">Display currency for transactions</p>
                         </div>
                         <div className="grid grid-cols-4 gap-2">
                             {CURRENCIES.map((curr) => (
@@ -203,12 +209,12 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
                                     onClick={() => handleCurrencyChange(curr.code)}
                                     disabled={isSaving}
                                     className={`p-3 rounded-lg border-2 transition-all text-left ${currency === curr.code
-                                            ? 'border-blue-500 bg-blue-50'
-                                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                        ? 'border-primary bg-secondary'
+                                        : 'border-border hover:border-primary/50 hover:bg-secondary/50'
                                         } ${isSaving ? 'opacity-50' : ''}`}
                                 >
-                                    <div className="text-lg font-bold text-black">{curr.symbol}</div>
-                                    <div className="text-xs text-gray-500">{curr.code}</div>
+                                    <div className="text-lg font-bold text-foreground">{curr.symbol}</div>
+                                    <div className="text-xs text-muted-foreground">{curr.code}</div>
                                 </button>
                             ))}
                         </div>
@@ -232,8 +238,8 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
                                     onClick={() => handleDateFormatChange(format.code)}
                                     disabled={isSaving}
                                     className={`p-4 rounded-lg border-2 transition-all text-center ${dateFormat === format.code
-                                            ? 'border-blue-500 bg-blue-50'
-                                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                        ? 'border-blue-500 bg-blue-50'
+                                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                         } ${isSaving ? 'opacity-50' : ''}`}
                                 >
                                     <div className="text-sm font-bold text-black">{format.label}</div>
@@ -256,8 +262,8 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
                                     onClick={() => handleFiscalYearChange(fy.code)}
                                     disabled={isSaving}
                                     className={`p-4 rounded-lg border-2 transition-all text-left ${fiscalYear === fy.code
-                                            ? 'border-blue-500 bg-blue-50'
-                                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                        ? 'border-blue-500 bg-blue-50'
+                                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                         } ${isSaving ? 'opacity-50' : ''}`}
                                 >
                                     <div className="text-sm font-bold text-black">{fy.label}</div>
@@ -270,21 +276,21 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
             </div>
 
             {/* Data Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-black">Data & Privacy</h2>
-                    <p className="text-sm text-gray-500">Manage your data</p>
+            <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="px-6 py-4 border-b border-border">
+                    <h2 className="text-lg font-semibold text-foreground">Data & Privacy</h2>
+                    <p className="text-sm text-muted-foreground">Manage your data</p>
                 </div>
                 <div className="p-6 space-y-4">
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div className="flex items-center justify-between py-3 border-b border-border/50">
                         <div>
-                            <p className="text-sm font-medium text-black">Export Data</p>
-                            <p className="text-sm text-gray-500">Download all your transactions as CSV</p>
+                            <p className="text-sm font-medium text-foreground">Export Data</p>
+                            <p className="text-sm text-muted-foreground">Download all your transactions as CSV</p>
                         </div>
                         <button
                             onClick={handleExportCSV}
                             disabled={isExporting}
-                            className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2"
                         >
                             {isExporting ? (
                                 <>
@@ -306,12 +312,12 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
                     </div>
                     <div className="flex items-center justify-between py-3">
                         <div>
-                            <p className="text-sm font-medium text-black">Delete Account</p>
-                            <p className="text-sm text-gray-500">Permanently delete your account and all data</p>
+                            <p className="text-sm font-medium text-foreground">Delete Account</p>
+                            <p className="text-sm text-muted-foreground">Permanently delete your account and all data</p>
                         </div>
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
-                            className="px-4 py-2 rounded-lg border-2 border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition-all"
+                            className="px-4 py-2 rounded-lg border-2 border-red-500/20 text-red-600 text-sm font-medium hover:bg-red-500/10 transition-all"
                         >
                             Delete Account
                         </button>
@@ -320,21 +326,21 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
             </div>
 
             {/* About Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-black">About</h2>
+            <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="px-6 py-4 border-b border-border">
+                    <h2 className="text-lg font-semibold text-foreground">About</h2>
                 </div>
                 <div className="p-6">
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">A</span>
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                            <span className="text-primary-foreground font-bold text-lg">A</span>
                         </div>
                         <div>
-                            <p className="text-lg font-semibold text-black">Account AI</p>
-                            <p className="text-sm text-gray-500">Version 1.0.0</p>
+                            <p className="text-lg font-semibold text-foreground">Account AI</p>
+                            <p className="text-sm text-muted-foreground">Version 1.0.0</p>
                         </div>
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                         AI-powered accounting made simple. Record transactions using natural language
                         and let AI categorize them for you.
                     </p>
@@ -352,6 +358,6 @@ export default function SettingsClient({ settings, userEmail, userId, createdAt 
                 onCancel={() => setShowDeleteConfirm(false)}
                 isLoading={isDeleting}
             />
-        </div>
+        </div >
     )
 }

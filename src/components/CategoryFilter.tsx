@@ -21,8 +21,8 @@ export default function CategoryFilter({ activeCategory, onCategoryChange }: Cat
                     key={category.value}
                     onClick={() => onCategoryChange(category.value)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${activeCategory === category.value
-                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                            : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600'
+                        ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
+                        : 'bg-card text-foreground/70 border border-border hover:border-primary/50 hover:text-primary hover:bg-secondary/50'
                         }`}
                 >
                     <span>{category.icon}</span>
