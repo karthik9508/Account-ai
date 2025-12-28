@@ -88,7 +88,7 @@ export default async function DashboardPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-foreground truncate">{user.email}</p>
-                            <p className="text-xs text-foreground/50">Free Plan</p>
+                            <p className="text-xs text-foreground/50">Beta Version</p>
                         </div>
                     </div>
                     <form action={signout}>
