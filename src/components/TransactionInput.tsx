@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { analyzeTransactionPrompt, saveTransaction } from '@/app/actions/transactions'
+import { useState, useEffect } from 'react'
+import { analyzeTransactionPrompt, saveTransaction, Transaction, getDailyTransactionCount } from '@/app/actions/transactions'
 import { TransactionAnalysis } from '@/lib/gemini/ai'
+import InvoiceModal from './InvoiceModal'
+import PricingModal from './PricingModal'
 
 interface TransactionInputProps {
     onTransactionCreated?: () => void
+    userEmail?: string
 }
 
 interface EditablePreview extends TransactionAnalysis {
@@ -19,13 +22,36 @@ const categoryConfig = {
     income: { label: 'Income', color: 'bg-blue-100 text-blue-700 border-blue-200', icon: '💰' }
 }
 
-export default function TransactionInput({ onTransactionCreated }: TransactionInputProps) {
+export default function TransactionInput({ onTransactionCreated, userEmail }: TransactionInputProps) {
     const [prompt, setPrompt] = useState('')
     const [isAnalyzing, setIsAnalyzing] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
     const [preview, setPreview] = useState<EditablePreview | null>(null)
+    const [showInvoiceModal, setShowInvoiceModal] = useState(false)
+    const [savedTransaction, setSavedTransaction] = useState<Transaction | null>(null)
+    const [dailyLimit, setDailyLimit] = useState({ count: 0, limit: 5, remaining: 5, isPremium: false })
+    const [showPricingModal, setShowPricingModal] = useState(false)
+
+    // Fetch daily limit on mount and after creating transactions
+    const fetchDailyLimit = async () => {
+        const result = await getDailyTransactionCount()
+        setDailyLimit(result)
+    }
+
+    const handleUpgradeClick = () => {
+        setShowPricingModal(true)
+    }
+
+    const handleUpgradeSuccess = (message?: string) => {
+        fetchDailyLimit()
+        setSuccess(message || '🎉 Welcome to Premium! You now have unlimited transactions.')
+    }
+
+    useEffect(() => {
+        fetchDailyLimit()
+    }, [])
 
     const getTodayDate = () => {
         return new Date().toISOString().split('T')[0]
@@ -83,6 +109,13 @@ export default function TransactionInput({ onTransactionCreated }: TransactionIn
                 setPrompt('')
                 setPreview(null)
                 onTransactionCreated?.()
+                fetchDailyLimit() // Update the daily limit counter
+
+                // Show invoice modal for sales transactions
+                if (result.transaction.category === 'sales') {
+                    setSavedTransaction(result.transaction)
+                    setShowInvoiceModal(true)
+                }
             } else {
                 setError(result.error || 'Failed to save transaction')
             }
@@ -129,17 +162,73 @@ export default function TransactionInput({ onTransactionCreated }: TransactionIn
 
     return (
         <div className="bg-card rounded-2xl shadow-sm border border-border p-6">
-            <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
+            <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-semibold text-foreground">AI Transaction Entry</h3>
+                        <p className="text-sm text-foreground/50">Describe your transaction in natural language</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 className="text-lg font-semibold text-foreground">AI Transaction Entry</h3>
-                    <p className="text-sm text-foreground/50">Describe your transaction in natural language</p>
-                </div>
+                {/* Daily Limit Counter / Premium Badge */}
+                {dailyLimit.isPremium ? (
+                    <div className="px-3 py-1.5 rounded-lg text-sm font-medium bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-600 border border-amber-500/30 flex items-center gap-1.5">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        Premium • Unlimited
+                    </div>
+                ) : (
+                    <div className="flex items-center gap-2">
+                        <div className={`px-3 py-1.5 rounded-lg text-sm font-medium ${dailyLimit.remaining === 0
+                            ? 'bg-red-500/10 text-red-500 border border-red-500/20'
+                            : dailyLimit.remaining <= 2
+                                ? 'bg-yellow-500/10 text-yellow-600 border border-yellow-500/20'
+                                : 'bg-primary/10 text-primary border border-primary/20'
+                            }`}>
+                            {dailyLimit.remaining}/{dailyLimit.limit} remaining today
+                        </div>
+                        <button
+                            onClick={handleUpgradeClick}
+                            className="px-3 py-1.5 rounded-lg text-sm font-medium bg-gradient-to-r from-amber-500 to-yellow-500 text-white hover:opacity-90 transition-all flex items-center gap-1.5"
+                        >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                            Upgrade
+                        </button>
+                    </div>
+                )}
             </div>
+
+            {/* Limit Reached Warning - Only for free users */}
+            {!dailyLimit.isPremium && dailyLimit.remaining === 0 && (
+                <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                                <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-amber-600">Daily Limit Reached</h4>
+                                <p className="text-sm text-amber-500/80">Upgrade to Premium for unlimited transactions!</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleUpgradeClick}
+                            className="px-4 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-amber-500 to-yellow-500 text-white hover:opacity-90 transition-all flex items-center gap-2"
+                        >
+                            Upgrade Now
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Preview Modal with Editable Fields */}
             {preview && (
@@ -268,82 +357,117 @@ export default function TransactionInput({ onTransactionCreated }: TransactionIn
                         </button>
                     </div>
                 </div>
-            )}
+            )
+            }
 
             {/* Input Form */}
-            {!preview && (
-                <form onSubmit={handleAnalyze}>
-                    <div className="relative">
-                        <textarea
-                            value={prompt}
-                            onChange={(e) => setPrompt(e.target.value)}
-                            placeholder="e.g., Sold 10 laptops to ABC Corp for ₹5 lakh"
-                            className="w-full px-4 py-3 pr-24 rounded-xl bg-input/50 border border-border text-foreground placeholder-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
-                            rows={3}
-                            disabled={isAnalyzing}
-                        />
-                        <button
-                            type="submit"
-                            disabled={isAnalyzing || !prompt.trim()}
-                            className="absolute right-3 bottom-3 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
-                        >
-                            {isAnalyzing ? (
-                                <>
-                                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Analyzing...
-                                </>
-                            ) : (
-                                <>
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                                    </svg>
-                                    Analyze
-                                </>
-                            )}
-                        </button>
-                    </div>
-                </form>
-            )}
+            {
+                !preview && (
+                    <form onSubmit={handleAnalyze}>
+                        <div className="relative">
+                            <textarea
+                                value={prompt}
+                                onChange={(e) => setPrompt(e.target.value)}
+                                placeholder="e.g., Sold 10 laptops to ABC Corp for ₹5 lakh"
+                                className="w-full px-4 py-3 pr-24 rounded-xl bg-input/50 border border-border text-foreground placeholder-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+                                rows={3}
+                                disabled={isAnalyzing}
+                            />
+                            <button
+                                type="submit"
+                                disabled={isAnalyzing || !prompt.trim()}
+                                className="absolute right-3 bottom-3 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                            >
+                                {isAnalyzing ? (
+                                    <>
+                                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Analyzing...
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                        </svg>
+                                        Analyze
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </form>
+                )
+            }
 
             {/* Status Messages */}
-            {error && (
-                <div className="mt-4 p-3 rounded-lg bg-red-50/10 border border-red-500/20">
-                    <p className="text-red-500 text-sm">{error}</p>
-                </div>
-            )}
+            {
+                error && (
+                    <div className="mt-4 p-3 rounded-lg bg-red-50/10 border border-red-500/20">
+                        <p className="text-red-500 text-sm">{error}</p>
+                    </div>
+                )
+            }
 
-            {success && (
-                <div className="mt-4 p-3 rounded-lg bg-green-50/10 border border-green-500/20">
-                    <p className="text-green-500 text-sm flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        {success}
-                    </p>
-                </div>
-            )}
+            {
+                success && (
+                    <div className="mt-4 p-3 rounded-lg bg-green-50/10 border border-green-500/20">
+                        <p className="text-green-500 text-sm flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            {success}
+                        </p>
+                    </div>
+                )
+            }
 
             {/* Example Prompts */}
-            {!preview && (
-                <div className="mt-4">
-                    <p className="text-xs text-foreground/50 mb-2">Try these examples:</p>
-                    <div className="flex flex-wrap gap-2">
-                        {examplePrompts.map((example, index) => (
-                            <button
-                                key={index}
-                                type="button"
-                                onClick={() => setPrompt(example)}
-                                className="text-xs px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all"
-                            >
-                                {example.length > 30 ? example.slice(0, 30) + '...' : example}
-                            </button>
-                        ))}
+            {
+                !preview && (
+                    <div className="mt-4">
+                        <p className="text-xs text-foreground/50 mb-2">Try these examples:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {examplePrompts.map((example, index) => (
+                                <button
+                                    key={index}
+                                    type="button"
+                                    onClick={() => setPrompt(example)}
+                                    className="text-xs px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all"
+                                >
+                                    {example.length > 30 ? example.slice(0, 30) + '...' : example}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+
+            {/* Invoice Modal for Sales Transactions */}
+            {
+                savedTransaction && (
+                    <InvoiceModal
+                        isOpen={showInvoiceModal}
+                        onClose={() => {
+                            setShowInvoiceModal(false)
+                            setSavedTransaction(null)
+                        }}
+                        transaction={savedTransaction}
+                        onInvoiceCreated={() => {
+                            setShowInvoiceModal(false)
+                            setSavedTransaction(null)
+                        }}
+                    />
+                )
+            }
+
+            {/* Pricing Modal for Premium Upgrade */}
+            <PricingModal
+                isOpen={showPricingModal}
+                onClose={() => setShowPricingModal(false)}
+                onSuccess={handleUpgradeSuccess}
+                userEmail={userEmail}
+            />
+        </div >
     )
 }

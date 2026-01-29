@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.accountai.tech/sitemap.xml
+
+# Disallow API routes and auth callbacks
+Disallow: /api/
+Disallow: /auth/

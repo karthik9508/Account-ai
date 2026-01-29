@@ -9,6 +9,7 @@ export interface UserSettings {
     currency: string
     date_format: string
     fiscal_year_start: string
+    subscription_plan: 'free' | 'premium'
     created_at: string
     updated_at: string
 }
@@ -42,7 +43,8 @@ export async function getUserSettings(): Promise<{ success: boolean; settings?: 
                     user_id: user.id,
                     currency: 'INR',
                     date_format: 'DD/MM/YYYY',
-                    fiscal_year_start: 'April'
+                    fiscal_year_start: 'April',
+                    subscription_plan: 'free'
                 })
                 .select()
                 .single()
@@ -58,6 +60,7 @@ export async function getUserSettings(): Promise<{ success: boolean; settings?: 
                         currency: 'INR',
                         date_format: 'DD/MM/YYYY',
                         fiscal_year_start: 'April',
+                        subscription_plan: 'free',
                         created_at: new Date().toISOString(),
                         updated_at: new Date().toISOString()
                     }
@@ -137,5 +140,47 @@ export async function updateUserSettings(
     } catch (error) {
         console.error('Update settings error:', error)
         return { success: false, error: 'An unexpected error occurred' }
+    }
+}
+
+// Upgrade user to premium plan
+export async function upgradeToPremium(): Promise<{ success: boolean; error?: string }> {
+    try {
+        const supabase = await createClient()
+
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        if (userError || !user) {
+            return { success: false, error: 'Please sign in' }
+        }
+
+        const { error } = await supabase
+            .from('user_settings')
+            .update({
+                subscription_plan: 'premium',
+                updated_at: new Date().toISOString()
+            })
+            .eq('user_id', user.id)
+
+        if (error) {
+            console.error('Upgrade error:', error)
+            return { success: false, error: 'Failed to upgrade. Please try again.' }
+        }
+
+        revalidatePath('/dashboard')
+        revalidatePath('/dashboard/settings')
+        return { success: true }
+    } catch (error) {
+        console.error('Upgrade error:', error)
+        return { success: false, error: 'An unexpected error occurred' }
+    }
+}
+
+// Check if user has premium subscription
+export async function isPremiumUser(): Promise<boolean> {
+    try {
+        const { settings } = await getUserSettings()
+        return settings?.subscription_plan === 'premium'
+    } catch {
+        return false
     }
 }

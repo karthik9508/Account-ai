@@ -1,9 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import InvoiceList from '@/components/InvoiceList'
 import { getUserSettings } from '@/app/actions/settings'
-import SettingsClient from '@/components/SettingsClient'
 
-export default async function SettingsPage() {
+export default async function InvoicesPage() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -12,25 +12,21 @@ export default async function SettingsPage() {
     }
 
     const { settings } = await getUserSettings()
+    const currency = settings?.currency || 'INR'
 
     return (
         <>
-            {/* Top Header */}
+            {/* Header */}
             <header className="h-16 bg-card border-b border-border flex items-center justify-between px-8 sticky top-0 z-10">
                 <div>
-                    <h1 className="text-xl font-semibold text-foreground">Settings</h1>
-                    <p className="text-sm text-muted-foreground">Manage your account and preferences</p>
+                    <h1 className="text-xl font-semibold text-foreground">Invoices</h1>
+                    <p className="text-sm text-foreground/50">Manage your sales invoices</p>
                 </div>
             </header>
 
-            {/* Main Content Area */}
+            {/* Content */}
             <main className="p-8">
-                <SettingsClient
-                    settings={settings || null}
-                    userEmail={user.email || ''}
-                    userId={user.id}
-                    createdAt={user.created_at}
-                />
+                <InvoiceList currency={currency} />
             </main>
         </>
     )

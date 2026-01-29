@@ -3,6 +3,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { analyzeTransaction, TransactionAnalysis } from '@/lib/gemini/ai'
 import { revalidatePath } from 'next/cache'
+import { isPremiumUser } from './settings'
+
+// Daily transaction limit per user (free tier)
+const DAILY_TRANSACTION_LIMIT = 5
 
 export interface Transaction {
     id: string
@@ -15,11 +19,70 @@ export interface Transaction {
     created_at: string
 }
 
+// Get today's transaction count for the user
+export async function getDailyTransactionCount(): Promise<{ count: number; limit: number; remaining: number; isPremium: boolean }> {
+    try {
+        const supabase = await createClient()
+
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+            return { count: 0, limit: DAILY_TRANSACTION_LIMIT, remaining: DAILY_TRANSACTION_LIMIT, isPremium: false }
+        }
+
+        // Check if user is premium - unlimited transactions
+        const premium = await isPremiumUser()
+        if (premium) {
+            // Get actual count for display but remaining is unlimited
+            const today = new Date()
+            const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0)
+            const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999)
+
+            const { count } = await supabase
+                .from('transactions')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', user.id)
+                .gte('created_at', startOfDay.toISOString())
+                .lte('created_at', endOfDay.toISOString())
+
+            return { count: count || 0, limit: -1, remaining: -1, isPremium: true }  // -1 means unlimited
+        }
+
+        // Get start and end of today in user's timezone (using UTC for consistency)
+        const today = new Date()
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0)
+        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999)
+
+        const { count, error } = await supabase
+            .from('transactions')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .gte('created_at', startOfDay.toISOString())
+            .lte('created_at', endOfDay.toISOString())
+
+        if (error) {
+            console.error('Count error:', error)
+            return { count: 0, limit: DAILY_TRANSACTION_LIMIT, remaining: DAILY_TRANSACTION_LIMIT, isPremium: false }
+        }
+
+        const currentCount = count || 0
+        return {
+            count: currentCount,
+            limit: DAILY_TRANSACTION_LIMIT,
+            remaining: Math.max(0, DAILY_TRANSACTION_LIMIT - currentCount),
+            isPremium: false
+        }
+    } catch (error) {
+        console.error('Get daily count error:', error)
+        return { count: 0, limit: DAILY_TRANSACTION_LIMIT, remaining: DAILY_TRANSACTION_LIMIT, isPremium: false }
+    }
+}
+
 // New function to just analyze without saving
 export async function analyzeTransactionPrompt(prompt: string): Promise<{
     success: boolean
     analysis?: TransactionAnalysis
     error?: string
+    dailyLimitReached?: boolean
 }> {
     try {
         const supabase = await createClient()
@@ -28,6 +91,16 @@ export async function analyzeTransactionPrompt(prompt: string): Promise<{
         const { data: { user }, error: userError } = await supabase.auth.getUser()
         if (userError || !user) {
             return { success: false, error: 'Please sign in to record transactions' }
+        }
+
+        // Check daily limit before analyzing (skip for premium users with remaining = -1)
+        const { remaining } = await getDailyTransactionCount()
+        if (remaining !== -1 && remaining <= 0) {
+            return {
+                success: false,
+                error: `Daily limit reached! You can only create ${DAILY_TRANSACTION_LIMIT} transactions per day. Upgrade to Premium for unlimited transactions.`,
+                dailyLimitReached: true
+            }
         }
 
         // Analyze the transaction with AI
@@ -44,7 +117,7 @@ export async function saveTransaction(
     prompt: string,
     analysis: TransactionAnalysis,
     customDate?: string
-): Promise<{ success: boolean; transaction?: Transaction; error?: string }> {
+): Promise<{ success: boolean; transaction?: Transaction; error?: string; dailyLimitReached?: boolean }> {
     try {
         const supabase = await createClient()
 
@@ -52,6 +125,16 @@ export async function saveTransaction(
         const { data: { user }, error: userError } = await supabase.auth.getUser()
         if (userError || !user) {
             return { success: false, error: 'Please sign in to record transactions' }
+        }
+
+        // Check daily limit before saving (skip for premium users with remaining = -1)
+        const { remaining } = await getDailyTransactionCount()
+        if (remaining !== -1 && remaining <= 0) {
+            return {
+                success: false,
+                error: `Daily limit reached! You can only create ${DAILY_TRANSACTION_LIMIT} transactions per day. Upgrade to Premium for unlimited transactions.`,
+                dailyLimitReached: true
+            }
         }
 
         // Insert into database
